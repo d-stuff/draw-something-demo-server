@@ -1,14 +1,11 @@
 const redis = require("redis");
 const { promisify } = require("util");
 
-const client = redis.createClient({
-	url: process.env.REDIS_URL
-});
+const client = redis.createClient(process.env.REDIS_URL || 'redis://localhost:6379');
 const getItem = promisify(client.get).bind(client);
 const setItem = promisify(client.set).bind(client);
-const removeItem = promisify(client.remove).bind(client);
+const removeItem = promisify(client.del).bind(client);
 const getKeys = promisify(client.keys).bind(client);
-
 
 let allPlayers = null;
 let orderedPlayers = [];

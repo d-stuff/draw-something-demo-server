@@ -24,4 +24,4 @@ app.use((err, req, res, next) => {
 })
 
 
-ApiKit.start('Draw something workshop demo server is up', process.env.PORT);
+ApiKit.start('Draw something workshop demo server is up', process.env.PORT || 3000);
