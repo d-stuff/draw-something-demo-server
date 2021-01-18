@@ -9,6 +9,8 @@ const getKeys = promisify(client.keys).bind(client);
 
 
 let allPlayers = null;
+let orderedPlayers = [];
+let currentRound = null;
 
 function clearDatabase() {
 	return getKeys('*').then(async keys => {
@@ -41,6 +43,10 @@ function getAllPlayers() {
 	return Promise.resolve(allPlayers);
 }
 
+async function getOrderedPlayers() {
+	return orderedPlayers;
+}
+
 /**
  *
  * @param playerId: string
@@ -60,6 +66,7 @@ function createPlayer(player) {
 	return getAllPlayers()
 		.then(players => {
 			players[player.id] = player;
+			orderedPlayers.push({ ...player });
 			return setItem('players', JSON.stringify(players));
 		})
 }
@@ -69,10 +76,17 @@ function createPlayer(player) {
  * @returns {Promise<{drawerId?: string, selectedWord?: string}>}
  */
 function getCurrentRound() {
-	return getItem('round').then(json => typeof json === 'string' ? JSON.parse(json) : {
-		drawerId: null,
-		word: null
-	});
+	if (currentRound) {
+		return Promise.resolve(currentRound);
+	}
+	return getItem('round')
+		.then(JSON.parse)
+		.then(round => currentRound = round)
+		.catch(() => currentRound = {
+			drawerId: null,
+			word: null
+		})
+		.then(() => currentRound);
 }
 
 
@@ -81,5 +95,6 @@ module.exports = {
 	getAllPlayers,
 	getPlayer,
 	createPlayer,
-	getCurrentRound
+	getCurrentRound,
+	getOrderedPlayers
 }
