@@ -5,7 +5,7 @@ const SECRET = process.env.JWT_SECRET || 'secret';
 
 async function verifyPlayer(req, res, next) {
 	try {
-		const playerId = jwt.verify(req.cookies.token, SECRET);
+		const playerId = jwt.verify(req.cookies.token || '', SECRET);
 		req.player = await getPlayer(playerId);
 		return next();
 	} catch (err) {
