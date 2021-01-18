@@ -1,7 +1,9 @@
 const redis = require("redis");
 const { promisify } = require("util");
 
-const client = redis.createClient(process.env.REDIS_TLS_URL || process.env.REDIS_URL);
+const client = redis.createClient({
+	url: process.env.REDIS_URL
+});
 const getItem = promisify(client.get).bind(client);
 const setItem = promisify(client.set).bind(client);
 const removeItem = promisify(client.remove).bind(client);
