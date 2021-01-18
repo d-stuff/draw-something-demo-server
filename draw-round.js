@@ -6,7 +6,7 @@ async function checkDrawRound(req, res, next) {
 		next();
 	} catch (e) {
 		console.log('failed to load current round');
-		res.status(500).end(0);
+		res.status(500).end();
 	}
 }
 

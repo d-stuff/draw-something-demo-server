@@ -10,7 +10,6 @@ app.use(cookieParser());
 
 app.use(checkDrawRound);
 
-
 app
 	.post('/api/start', dsController.startGame)
 	.get('/api/status', verifyPlayer, dsController.gameStatus)
@@ -26,4 +25,4 @@ app.use((err, req, res, next) => {
 })
 
 
-ApiKit.start('Draw something workshop demo server is up', process.env.PORT || 3000);
+ApiKit.start('Draw something workshop demo server is up', process.env.PORT || 3000, '0.0.0.0');
