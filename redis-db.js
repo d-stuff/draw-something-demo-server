@@ -72,7 +72,7 @@ function createPlayer(player) {
 
 /**
  *
- * @returns {Promise<{drawerId?: string, selectedWord?: string}>}
+ * @returns {Promise<{drawerId?: string, word?: string}>}
  */
 function getCurrentRound() {
 	if (currentRound) {

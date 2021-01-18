@@ -10,6 +10,7 @@ app.use(cookieParser());
 
 app.use(checkDrawRound);
 
+
 app
 	.post('/api/start', dsController.startGame)
 	.get('/api/status', verifyPlayer, dsController.gameStatus)
@@ -17,6 +18,7 @@ app
 	.put('/api/drawing', verifyPlayer, dsController.setDrawing)
 	.post('/api/word', verifyPlayer, dsController.sendWord);
 
+app.get('/api', (_, res) => res.json({message: 'welcome to draw something demo game API'}).end())
 
 app.use((err, req, res, next) => {
 	console.log('some error happened', err);

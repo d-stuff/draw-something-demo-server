@@ -18,23 +18,25 @@ async function startGame(req, res) {
 	return res.json(player).end();
 }
 
-async function gameStatus(req, res) {
-	const status = {
-		players: await getOrderedPlayers()
-	};
+async function gameStatus(req, res, next) {
+	try {
+		const status = {
+			players: await getOrderedPlayers(),
+			round: {
+				drawerId: req.round.drawerId
+			}
+		};
 
-	status.round = {
-		drawerId: res.round.drawerId
+		if (req.player.id === req.round.drawerId) {
+			status.round.drawer = req.player;
+			status.round.word = req.round.word;
+		} else {
+			status.round.drawer = await getPlayer(req.round.drawerId);
+		}
+		return res.json(status).end();
+	} catch (e) {
+		return next(e);
 	}
-
-	if (req.player.id === req.round.drawerId) {
-		status.round.drawer = req.player;
-		status.round.word = req.round.word;
-	} else {
-		status.round.drawer = await getPlayer(req.round.drawerId);
-	}
-
-	return res.json(status).end();
 }
 
 function getDrawing(req, res) {
