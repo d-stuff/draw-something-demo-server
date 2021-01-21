@@ -10,6 +10,7 @@ const getKeys = promisify(client.keys).bind(client);
 let allPlayers = null;
 let orderedPlayers = [];
 let currentRound = null;
+let latestDrawing = null;
 
 function clearDatabase() {
 	return getKeys('*').then(async keys => {
@@ -70,6 +71,20 @@ function createPlayer(player) {
 		})
 }
 
+function getLatestDrawing() {
+	if (latestDrawing) {
+		return Promise.resolve(latestDrawing);
+	}
+	return getItem('drawing')
+		.then(drawing => latestDrawing = drawing)
+		.then(() => latestDrawing);
+}
+
+function setLatestDrawing(drawing) {
+	latestDrawing = drawing;
+	setItem('drawing', drawing);
+}
+
 /**
  *
  * @returns {Promise<{drawerId?: string, word?: string}>}
@@ -82,7 +97,7 @@ function getCurrentRound() {
 		.then(JSON.parse)
 		.then(round => currentRound = round)
 		.catch(() => currentRound = {
-			drawerId: null,
+			drawerId: orderedPlayers[0].id,
 			word: null
 		})
 		.then(() => currentRound);
@@ -95,5 +110,7 @@ module.exports = {
 	getPlayer,
 	createPlayer,
 	getCurrentRound,
-	getOrderedPlayers
+	getOrderedPlayers,
+	getLatestDrawing,
+	setLatestDrawing
 }

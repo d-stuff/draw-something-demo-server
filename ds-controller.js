@@ -1,5 +1,5 @@
 const shortid = require('shortid');
-const { getPlayer, getOrderedPlayers, createPlayer } = require('./redis-db');
+const { getPlayer, getOrderedPlayers, createPlayer, getLatestDrawing } = require('./redis-db');
 const { setPlayerToken } = require('./verify-user');
 
 async function startGame(req, res) {
@@ -39,12 +39,22 @@ async function gameStatus(req, res, next) {
 	}
 }
 
-function getDrawing(req, res) {
-
+async function getDrawing(req, res, next) {
+	try {
+		const draw = await getLatestDrawing();
+		res.send(draw);
+	} catch (e) {
+		next(e);
+	}
 }
 
 function setDrawing(req, res) {
-
+	if (req.player.id === req.round.drawerId) {
+		setDrawing(req.body);
+		res.status(200).end();
+	} else {
+		res.status(401).end();
+	}
 }
 
 function sendWord(req, res) {
