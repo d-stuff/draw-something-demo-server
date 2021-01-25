@@ -1,6 +1,6 @@
 const redis = require("redis");
 const { promisify } = require("util");
-const { words } = require('words');
+const { words } = require('./words.json');
 const client = redis.createClient(process.env.REDIS_URL || 'redis://localhost:6379');
 const getItem = promisify(client.get).bind(client);
 const setItem = promisify(client.set).bind(client);
