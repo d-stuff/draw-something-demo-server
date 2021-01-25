@@ -1,6 +1,6 @@
 const redis = require("redis");
 const { promisify } = require("util");
-
+const { words } = require('words.json');
 const client = redis.createClient(process.env.REDIS_URL || 'redis://localhost:6379');
 const getItem = promisify(client.get).bind(client);
 const setItem = promisify(client.set).bind(client);
@@ -96,11 +96,31 @@ function getCurrentRound() {
 	return getItem('round')
 		.then(JSON.parse)
 		.then(round => currentRound = round)
-		.catch(() => currentRound = {
-			drawerId: orderedPlayers[0].id,
-			word: null
-		})
+		.catch(() => setNewRound())
 		.then(() => currentRound);
+}
+
+async function setNewRound({ drawerId, word, endTime } = {}) {
+	currentRound = {
+		drawerId: drawerId || getRandom(orderedPlayers).id,
+		word: word || getRandom(words),
+		endTime: endTime || Date.now() + (1000 * 60 * 3) // in 3 minutes
+	};
+	await setItem('round', JSON.stringify(currentRound));
+	return currentRound;
+}
+
+async function setWinners(ids = [], extraPoints = 50) {
+	const players = await getAllPlayers();
+	ids.map(id => {
+		players[id].points += extraPoints;
+	});
+	orderedPlayers = Object.values(players).sort((a, b) => a.points > b.points ? 1 : (a.points < b.points ? -1 : 0));
+	return setItem('players', JSON.stringify(players));
+}
+
+function getRandom(arr) {
+	return arr[Math.floor(Math.random() * arr.length)];
 }
 
 
@@ -112,5 +132,7 @@ module.exports = {
 	getCurrentRound,
 	getOrderedPlayers,
 	getLatestDrawing,
-	setLatestDrawing
+	setLatestDrawing,
+	setNewRound,
+	setWinners
 }

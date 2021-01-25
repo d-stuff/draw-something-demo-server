@@ -1,5 +1,5 @@
 const shortid = require('shortid');
-const { getPlayer, getOrderedPlayers, createPlayer, getLatestDrawing } = require('./redis-db');
+const { getPlayer, getOrderedPlayers, createPlayer, getLatestDrawing, setLatestDrawing, setWinners, setNewRound } = require('./redis-db');
 const { setPlayerToken } = require('./verify-user');
 
 async function startGame(req, res) {
@@ -21,6 +21,7 @@ async function startGame(req, res) {
 async function gameStatus(req, res, next) {
 	try {
 		const status = {
+			me: req.player,
 			players: await getOrderedPlayers(),
 			round: {
 				drawerId: req.round.drawerId
@@ -50,15 +51,23 @@ async function getDrawing(req, res, next) {
 
 function setDrawing(req, res) {
 	if (req.player.id === req.round.drawerId) {
-		setDrawing(req.body);
+		setLatestDrawing(req.body);
 		res.status(200).end();
 	} else {
 		res.status(401).end();
 	}
 }
 
-function sendWord(req, res) {
-
+async function sendWord(req, res) {
+	if (req.query.word && req.query.word === req.round.word) {
+		await setWinners([req.player.id, req.drawer.id]);
+		await setNewRound();
+		res.status(200).json({
+			message: 'You did it!'
+		})
+	} else {
+		res.status(400).end();
+	}
 }
 
 module.exports = {
