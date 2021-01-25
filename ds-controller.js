@@ -59,7 +59,7 @@ function setDrawing(req, res) {
 }
 
 async function sendWord(req, res) {
-	if (req.query.word && req.query.word === req.round.word) {
+	if (req.body.word && req.body.word === req.round.word) {
 		await setWinners([req.player.id, req.drawer.id]);
 		await setNewRound();
 		res.status(200).json({
