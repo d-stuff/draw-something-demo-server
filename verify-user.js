@@ -5,7 +5,7 @@ const SECRET = process.env.JWT_SECRET || 'secret';
 
 async function verifyPlayer(req, res, next) {
 	if (!req.cookies.token) {
-		res.status(401).end({ message: 'user is not connected' });
+		res.status(401).json({ message: 'user is not connected' }).end();
 	}
 	try {
 		const playerId = jwt.verify(req.cookies.token || '', SECRET);
