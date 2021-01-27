@@ -14,8 +14,8 @@ async function verifyPlayer(req, res, next) {
 	}
 }
 
-function setPlayerToken(req, player) {
-	req.cookie('token', jwt.sign(player.id, SECRET));
+function setPlayerToken(res, player) {
+	res.cookie('token', jwt.sign(player.id, SECRET));
 }
 
 

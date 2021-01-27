@@ -7,7 +7,7 @@ async function startGame(req, res) {
 
 	const player = { name: playerName, id: shortid.generate(), points: 0 };
 
-	setPlayerToken(req, player);
+	setPlayerToken(res, player);
 
 	try {
 		await createPlayer(player);
