@@ -3,6 +3,7 @@ const { getPlayer, getOrderedPlayers, createPlayer, getLatestDrawing, setLatestD
 const { getPlayerToken } = require('./verify-user');
 
 async function startGame(req, res) {
+	console.log(req.body);
 	const playerName = req.body.player;
 
 	const player = { name: playerName, id: shortid.generate(), points: 0 };
