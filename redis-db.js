@@ -34,6 +34,11 @@ function getAllPlayers() {
 	if (!allPlayers) {
 		return getItem('players')
 			.then(json => allPlayers = typeof json === 'string' ? JSON.parse(json) : {})
+			.then(() => {
+				if (!orderedPlayers) {
+					setOrderedPlayers(allPlayers);
+				}
+			})
 			.then(() => allPlayers)
 			.catch(() => {
 				allPlayers = {};
@@ -96,7 +101,7 @@ function getCurrentRound() {
 	return getItem('round')
 		.then(JSON.parse)
 		.then(round => {
-			if(!round) {
+			if (!round) {
 				throw new Error()
 			}
 			currentRound = round
@@ -122,8 +127,12 @@ async function setWinners(ids = [], extraPoints = 50) {
 	ids.map(id => {
 		players[id].points += extraPoints;
 	});
-	orderedPlayers = Object.values(players).sort((a, b) => a.points > b.points ? 1 : (a.points < b.points ? -1 : 0));
+	setOrderedPlayers(players);
 	return setItem('players', JSON.stringify(players));
+}
+
+function setOrderedPlayers(players) {
+	orderedPlayers = Object.values(players).sort((a, b) => a.points > b.points ? 1 : (a.points < b.points ? -1 : 0));
 }
 
 function getRandom(arr) {
