@@ -4,6 +4,9 @@ const { getPlayer } = require('./redis-db');
 const SECRET = process.env.JWT_SECRET || 'secret';
 
 async function verifyPlayer(req, res, next) {
+	if (!req.cookies.token) {
+		res.status(401).end({ message: 'user is not connected' });
+	}
 	try {
 		const playerId = jwt.verify(req.cookies.token || '', SECRET);
 		req.player = await getPlayer(playerId);
