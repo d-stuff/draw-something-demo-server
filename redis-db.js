@@ -95,7 +95,12 @@ function getCurrentRound() {
 	}
 	return getItem('round')
 		.then(JSON.parse)
-		.then(round => currentRound = round)
+		.then(round => {
+			if(!round) {
+				throw new Error()
+			}
+			currentRound = round
+		})
 		.catch(() => setNewRound())
 		.then(() => currentRound);
 }
