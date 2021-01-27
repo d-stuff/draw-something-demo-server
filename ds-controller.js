@@ -1,13 +1,13 @@
 const shortid = require('shortid');
 const { getPlayer, getOrderedPlayers, createPlayer, getLatestDrawing, setLatestDrawing, setWinners, setNewRound } = require('./redis-db');
-const { setPlayerToken } = require('./verify-user');
+const { getPlayerToken } = require('./verify-user');
 
 async function startGame(req, res) {
 	const playerName = req.body.player;
 
 	const player = { name: playerName, id: shortid.generate(), points: 0 };
 
-	setPlayerToken(res, player);
+	const token = getPlayerToken(res, player);
 
 	try {
 		await createPlayer(player);
@@ -15,7 +15,7 @@ async function startGame(req, res) {
 		return res.status(500).json({ message: 'error creating player' }).end();
 	}
 
-	return res.json(player).end();
+	return res.json({ player, token }).end();
 }
 
 async function gameStatus(req, res, next) {

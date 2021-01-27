@@ -20,7 +20,6 @@
   "homepage": "https://github.com/d-stuff/draw-something-demo-server#readme",
   "dependencies": {
     "@greenpress/api-kit": "^0.1.0",
-    "cookie-parser": "^1.4.5",
     "jsonwebtoken": "^8.5.1",
     "redis": "^3.0.2",
     "shortid": "^2.2.16"

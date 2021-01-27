@@ -4,11 +4,12 @@ const { getPlayer } = require('./redis-db');
 const SECRET = process.env.JWT_SECRET || 'secret';
 
 async function verifyPlayer(req, res, next) {
-	if (!req.cookies.token) {
-		res.status(401).json({ message: 'user is not connected' }).end();
+	if (!req.headers.token) {
+		res.status(401).json({ message: 'token is missing' }).end();
+		return;
 	}
 	try {
-		const playerId = jwt.verify(req.cookies.token || '', SECRET);
+		const playerId = jwt.verify(req.headers.token || '', SECRET);
 		req.player = await getPlayer(playerId);
 		return next();
 	} catch (err) {
@@ -17,12 +18,12 @@ async function verifyPlayer(req, res, next) {
 	}
 }
 
-function setPlayerToken(res, player) {
-	res.cookie('token', jwt.sign(player.id, SECRET), { httpOnly: true, domain: undefined });
+function getPlayerToken(player) {
+	return jwt.sign(player.id, SECRET)
 }
 
 
 module.exports = {
 	verifyPlayer,
-	setPlayerToken
+	getPlayerToken
 }

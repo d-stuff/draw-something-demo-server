@@ -1,5 +1,4 @@
 const ApiKit = require('@greenpress/api-kit');
-const cookieParser = require('cookie-parser')
 
 const dsController = require('./ds-controller');
 const { checkDrawRound } = require('./draw-round');
@@ -7,8 +6,6 @@ const { verifyPlayer } = require('./verify-user');
 const app = ApiKit.app();
 
 app.get('/api', (_, res) => res.json({message: 'welcome to draw something demo game API'}).end());
-
-app.use(cookieParser());
 
 app.post('/api/start', dsController.startGame)
 
