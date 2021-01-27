@@ -101,11 +101,13 @@ function getCurrentRound() {
 }
 
 async function setNewRound({ drawerId, word, endTime } = {}) {
+	console.log('players list', orderedPlayers);
 	currentRound = {
 		drawerId: drawerId || getRandom(orderedPlayers).id,
 		word: word || getRandom(words),
 		endTime: endTime || Date.now() + (1000 * 60 * 3) // in 3 minutes
 	};
+	console.log('current round', currentRound);
 	await setItem('round', JSON.stringify(currentRound));
 	return currentRound;
 }
