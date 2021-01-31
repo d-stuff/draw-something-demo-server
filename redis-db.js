@@ -85,7 +85,7 @@ function getLatestDrawing() {
 		.then(() => latestDrawing);
 }
 
-function setLatestDrawing(drawing) {
+function setLatestDrawing(drawing = '') {
 	latestDrawing = drawing;
 	setItem('drawing', drawing);
 }

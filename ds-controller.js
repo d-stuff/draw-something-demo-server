@@ -1,5 +1,13 @@
 const shortid = require('shortid');
-const { getPlayer, getOrderedPlayers, createPlayer, getLatestDrawing, setLatestDrawing, setWinners, setNewRound } = require('./redis-db');
+const {
+	getPlayer,
+	getOrderedPlayers,
+	createPlayer,
+	getLatestDrawing,
+	setLatestDrawing,
+	setWinners,
+	setNewRound
+} = require('./redis-db');
 const { getPlayerToken } = require('./verify-user');
 
 async function startGame(req, res) {
@@ -43,7 +51,7 @@ async function gameStatus(req, res, next) {
 async function getDrawing(req, res, next) {
 	try {
 		const draw = await getLatestDrawing();
-		res.send(draw);
+		res.json({ draw });
 	} catch (e) {
 		next(e);
 	}
@@ -51,8 +59,7 @@ async function getDrawing(req, res, next) {
 
 function setDrawing(req, res) {
 	if (req.player.id === req.round.drawerId) {
-		console.log(req.body);
-		setLatestDrawing(req.body);
+		setLatestDrawing(req.body && req.body.draw);
 		res.status(200).end();
 	} else {
 		res.status(401).end();
@@ -61,7 +68,7 @@ function setDrawing(req, res) {
 
 async function sendWord(req, res) {
 	if (req.body.word && req.body.word === req.round.word) {
-		await setWinners([req.player.id, req.round.drawerId]);
+		await setWinners([ req.player.id, req.round.drawerId ]);
 		await setNewRound();
 		res.status(200).json({
 			message: 'You did it!'
