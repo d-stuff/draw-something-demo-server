@@ -51,6 +51,7 @@ async function getDrawing(req, res, next) {
 
 function setDrawing(req, res) {
 	if (req.player.id === req.round.drawerId) {
+		console.log(req.body);
 		setLatestDrawing(req.body);
 		res.status(200).end();
 	} else {
