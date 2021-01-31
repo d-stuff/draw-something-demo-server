@@ -3,7 +3,6 @@ const { getPlayer, getOrderedPlayers, createPlayer, getLatestDrawing, setLatestD
 const { getPlayerToken } = require('./verify-user');
 
 async function startGame(req, res) {
-	console.log(req.body);
 	const playerName = req.body.player;
 
 	const player = { name: playerName, id: shortid.generate(), points: 0 };
@@ -61,7 +60,7 @@ function setDrawing(req, res) {
 
 async function sendWord(req, res) {
 	if (req.body.word && req.body.word === req.round.word) {
-		await setWinners([req.player.id, req.drawer.id]);
+		await setWinners([req.player.id, req.round.drawerId]);
 		await setNewRound();
 		res.status(200).json({
 			message: 'You did it!'
