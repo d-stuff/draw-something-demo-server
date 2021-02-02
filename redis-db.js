@@ -118,6 +118,7 @@ async function setNewRound({ drawerId, word, endTime } = {}) {
 		endTime: endTime || Date.now() + (1000 * 60 * 3) // in 3 minutes
 	};
 	console.log('current round', currentRound);
+	await setLatestDrawing('');
 	await setItem('round', JSON.stringify(currentRound));
 	return currentRound;
 }
@@ -142,7 +143,6 @@ function getRandom(arr) {
 
 module.exports = {
 	clearDatabase,
-	getAllPlayers,
 	getPlayer,
 	createPlayer,
 	getCurrentRound,
