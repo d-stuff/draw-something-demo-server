@@ -4,7 +4,7 @@ async function checkDrawRound(req, res, next) {
 	try {
 		req.round = await getCurrentRound();
 
-		if (Date.now() > req.round.endTime) {
+		if (req.round && Date.now() > req.round.endTime) {
 			req.round = await setNewRound();
 		}
 		next();
