@@ -112,6 +112,9 @@ function getCurrentRound() {
 
 async function setNewRound({ drawerId, word, endTime } = {}) {
 	console.log('players list', orderedPlayers);
+	if(!(orderedPlayers && orderedPlayers.length)) {
+		return null;
+	}
 	currentRound = {
 		drawerId: drawerId || getRandom(orderedPlayers).id,
 		word: word || getRandom(words),
